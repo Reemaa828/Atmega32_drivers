@@ -1,5 +1,5 @@
-#ifndef _DIO_REGISTER_H
-#define _DIO_REGISTER_H
+#ifndef MCAL_DIO_DIO_REGISTER_H_
+#define MCAL_DIO_DIO_REGISTER_H_
 
 
 #define DDRA    *((volatile u8*)(0X3A))
