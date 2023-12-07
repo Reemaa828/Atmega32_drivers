@@ -6,6 +6,7 @@ typedef enum {
     alloutput=0xff
 } DIO_PortDirection;
 
+
 typedef enum{
     input,
     output
