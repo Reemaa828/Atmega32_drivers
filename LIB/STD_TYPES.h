@@ -14,6 +14,4 @@ typedef          double       d64;
 typedef          long double  s512;
 typedef          float        f32;
 
-
-
 #endif
