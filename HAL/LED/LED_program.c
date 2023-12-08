@@ -7,7 +7,6 @@
 
 void LED_voidinit(LED_Config LED){
     DIO_voidSetPinDirection(LED.port,LED.pin,output);
-    DIO_voidSetPinValue(LED.port,LED.pin,LED.connection);
 }
 
 void LED_voidTurnOn(LED_Config LED){
