@@ -5,24 +5,24 @@
 #include "LED_interface.h"
 #include "LED_private.h"
 
-void LED_voidinit(LED_Config LED){
+void LED_voidInit(LED_Config LED){
     DIO_voidSetPinDirection(LED.port,LED.pin,output);
 }
 
 void LED_voidTurnOn(LED_Config LED){
-    if(LED.connection==sink){
+    if(LED.connection==LED_sink){
     DIO_voidSetPinValue(LED.port,LED.pin,low);
     }
-    else if(LED.connection==source){
+    else if(LED.connection==LED_source){
         DIO_voidSetPinValue(LED.port,LED.pin,high);
     }
 }
 
-void LED_voidTurnOFF(LED_Config LED){
-    if(LED.connection==sink){
+void LED_voidTurnOff(LED_Config LED){
+    if(LED.connection==LED_sink){
     DIO_voidSetPinValue(LED.port,LED.pin,high);
     }
-    else if(LED.connection==source){
+    else if(LED.connection==LED_source){
         DIO_voidSetPinValue(LED.port,LED.pin,low);
     }
 }

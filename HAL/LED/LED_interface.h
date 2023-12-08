@@ -15,8 +15,8 @@ typedef enum
 
 typedef enum
 {
-    sink,
-    source
+    LED_sink,
+    LED_source
 }LED_Connection;
 
 typedef struct{
@@ -24,7 +24,7 @@ typedef struct{
     u8 pin;
     u8 connection;
 }LED_Config;
-void LED_voidinit(LED_Config LED);
+void LED_voidInit(LED_Config LED);
 void LED_voidTurnOn(LED_Config LED);
 void LED_voidTurnOff(LED_Config LED);
 #endif
