@@ -1,5 +1,5 @@
-#ifndef HAL_LED_INTERFACE_H
-#define HAL_LED_INTERFACE_H
+#ifndef HAL_LED_INTERFACE_H_
+#define HAL_LED_INTERFACE_H_
 
 typedef enum
 {
