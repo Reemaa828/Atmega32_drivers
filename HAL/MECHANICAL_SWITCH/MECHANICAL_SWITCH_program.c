@@ -9,7 +9,7 @@ void SW_voidInit(SW_Config switch1){
     if(switch1.state==SW_INT_PULL_UP){
         DIO_voidEnablePullupResistor(switch1.port,switch1.pin);
     }
-    DIO_voidSetPinDirection(switch1.port,switch1.pin,input);
+    DIO_voidSetPinDirection(switch1.port,switch1.pin,DIO_input);
 }
 
 u8 SW_u8ReadSwitch(SW_Config switch1){
