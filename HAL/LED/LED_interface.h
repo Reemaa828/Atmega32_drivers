@@ -27,4 +27,5 @@ typedef struct{
 void LED_voidInit(LED_Config LED);
 void LED_voidTurnOn(LED_Config LED);
 void LED_voidTurnOff(LED_Config LED);
+void LED_voidToggle(LED_Config LED);
 #endif
