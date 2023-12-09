@@ -28,7 +28,7 @@ typedef enum{
 typedef struct{
     u8 port;
     u8 pin;
-    SW_State state;
+    SW_Connections connection;
 }SW_Config;
 
 void SW_voidInit(SW_Config switch1);
