@@ -1,0 +1,6 @@
+{
+    "C_Cpp.errorSquiggles": "disabled",
+    "files.associations": {
+        "gie_register.h": "c"
+    }
+}

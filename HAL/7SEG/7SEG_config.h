@@ -1,0 +1,11 @@
+#ifndef HAL_7SEG_7SEG_CONFIG_H_
+#define HAL_7SEG_7SEG_CONFIG_H_
+
+#ifndef COMMAN_CATHODE
+#ifndef COMMAN_ANODE
+
+#define COMMAN_CATHODE  //HERE DEFINE YOUR 7SEG CONFIGURATION
+ 
+#endif
+#endif
+#endif
