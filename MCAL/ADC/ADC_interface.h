@@ -1,0 +1,5 @@
+#ifndef MCAL_ADC_ADC_INTERFACE_H_
+#define MCAL_ADC_ADC_INTERFACE_H_
+
+
+#endif

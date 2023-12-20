@@ -1,0 +1,4 @@
+#ifndef MCAL_TIMER_TIMER_INTERFACE_H_
+#define MCAL_TIMER_TIMER_INTERFACE_H_
+
+#endif
