@@ -8,7 +8,7 @@
 
 static u32 Global_u32OverFlowCounts=0;
 static u32 Global_u32Counter=0;
-
+u16 preScale[]={0,1,8,64,256,1024};
 volatile void (* TIMER_pCallBack[8])(void)={NULL};
 
 void TIMER_voidInit(void){

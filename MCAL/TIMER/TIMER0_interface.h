@@ -20,7 +20,7 @@ typedef enum {
 #define EXTERNAL_cLOCK_FALLING_EDGE 6
 #define EXTERNAL_cLOCK_RISING_EDGE  7
 
-u8 preScale[]={0,1,8,64,256,1024};
+
 void TIMER_voidInit(void);
 void TIMER_voidSetPreload(u8 Copy_u8PreloadValue);
 void TIMER_voidEnable(void);
