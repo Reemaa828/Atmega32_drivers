@@ -68,23 +68,23 @@ void TIMER_voidSetCallBackFun(void (* Copy_pvCallBack)(void),Timers_Interrupt in
 void __vector_12(void) __attribute__((signal));
 void __vector_12(void){
 
-      TIMER_pCallBack[TIMER0_OVF];
+      TIMER_pCallBack[TIMER0_OVF]();
 }
 
 void __vector_11(void) __attribute__((signal));
 void __vector_11(void){
-      TIMER_pCallBack[TIMER0_COMP];
+      TIMER_pCallBack[TIMER0_COMP]();
 }
 
 u8 TIMER_u8GetCounts(void){
       return TCNT0;
 }
 
-void TIMER_voidSetDesiredTime_ms(u32 Copy_u8DesiredTime){
+void TIMER_voidSetDesiredTime_ms(u32 Copy_u32DesiredTime){
       u32 Local_u32TickTime       = preScale[TIMER_PRESCALER]*1000000/(TIMER_RESOLUTION*1000000);
-      u32 Local_u32OverflowTime   = Local_u8TickTime*OVERFLOW_COUNTS*1000;
-      Global_u32OverFlowCounts       = Copy_u8DesiredTime/Local_u32OverflowTime;
-        u32  Local_u32Reminder = Copy_u8DesiredTime%Local_u32OverflowTime;
+      u32 Local_u32OverflowTime   = Local_u32TickTime*OVERFLOW_COUNTS*1000;
+      Global_u32OverFlowCounts       = Copy_u32DesiredTime/Local_u32OverflowTime;
+        u32  Local_u32Reminder = Copy_u32DesiredTime%Local_u32OverflowTime;
         if(Local_u32Reminder!=0){
             Global_u32OverFlowCounts++;
         }
