@@ -31,6 +31,8 @@
 /***************************************/
 #define TIMER_PRESCALER        _1_ 
 
+#define OVERFLOW_COUNTS 256
+#define TIMER_RESOLUTION 8
 
 
 #endif

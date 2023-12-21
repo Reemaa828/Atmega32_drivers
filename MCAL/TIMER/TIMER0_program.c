@@ -6,7 +6,8 @@
 #include "TIMER0_config.h"
 #include "TIMER0_interface.h"
 
-
+static u32 Global_u32OverFlowCounts=0;
+static u32 Global_u32Counter=0;
 
 volatile void (* TIMER_pCallBack[8])(void)={NULL};
 
@@ -42,35 +43,9 @@ void TIMER_voidSetPreload(u8 Copy_u8PreloadValue){
 }
 
 void TIMER_voidEnable(void){
-      #if   TIMER_PRESCALER == _1_ 
-             SET_BIT(TCCR0,CS00);              
-             CLR_BIT(TCCR0,CS01);              
-             CLR_BIT(TCCR0,CS10);              
-       #elif TIMER_PRESCALER == _8_   
-             CLR_BIT(TCCR0,CS00);              
-             SET_BIT(TCCR0,CS01);              
-             CLR_BIT(TCCR0,CS10);             
-       #elif TIMER_PRESCALER == _64_ 
-             CLR_BIT(TCCR0,CS00);              
-             SET_BIT(TCCR0,CS01);              
-             SET_BIT(TCCR0,CS10);      
-       #elif TIMER_PRESCALER == _256_  
-             CLR_BIT(TCCR0,CS00);              
-             CLR_BIT(TCCR0,CS01);              
-             SET_BIT(TCCR0,CS10);      
-      #elif TIMER_PRESCALER == _1024_  
-             SET_BIT(TCCR0,CS00);              
-             CLR_BIT(TCCR0,CS01);              
-             SET_BIT(TCCR0,CS10);    
-      #elif TIMER_PRESCALER == EXTERNAL_cLOCK_FALLING_EDGE 
-             CLR_BIT(TCCR0,CS00);              
-             SET_BIT(TCCR0,CS01);              
-             SET_BIT(TCCR0,CS10);   
-      #elif TIMER_PRESCALER == EXTERNAL_cLOCK_RISING_EDGE 
-            SET_BIT(TCCR0,CS00);              
-            SET_BIT(TCCR0,CS01);              
-            SET_BIT(TCCR0,CS10);   
-        #endif
+      
+        TCCR0|=0b11111000;
+        TCCR0|=TIMER_PRESCALER;
 }
 
 void TIMER_voidDisable(void){
@@ -80,11 +55,19 @@ void TIMER_voidDisable(void){
 }
 
 void TIMER_voidSetCallBackFun(void (* Copy_pvCallBack)(void),Timers_Interrupt interruptNum){
-      TIMER_pCallBack[interruptNum]=Copy_pvCallBack;
+      Global_u32Counter++;
+
+      if(Global_u32Counter>=Global_u32OverFlowCounts){
+
+            TIMER_pCallBack[interruptNum]=Copy_pvCallBack;
+            Global_u32Counter=0;
+      }
+      
 }
 
 void __vector_12(void) __attribute__((signal));
 void __vector_12(void){
+
       TIMER_pCallBack[TIMER0_OVF];
 }
 
@@ -97,4 +80,14 @@ u8 TIMER_u8GetCounts(void){
       return TCNT0;
 }
 
+void TIMER_voidSetDesiredTime_ms(u32 Copy_u8DesiredTime){
+      u32 Local_u32TickTime       = preScale[TIMER_PRESCALER]*1000000/(TIMER_RESOLUTION*1000000);
+      u32 Local_u32OverflowTime   = Local_u8TickTime*OVERFLOW_COUNTS*1000;
+      Global_u32OverFlowCounts       = Copy_u8DesiredTime/Local_u32OverflowTime;
+        u32  Local_u32Reminder = Copy_u8DesiredTime%Local_u32OverflowTime;
+        if(Local_u32Reminder!=0){
+            Global_u32OverFlowCounts++;
+        }
+     TIMER_voidSetPreload(Local_u32OverflowTime-Local_u32Reminder);
+}
 
