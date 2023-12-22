@@ -33,6 +33,6 @@
 
 #define OVERFLOW_COUNTS 256
 #define TIMER_RESOLUTION 8
-
+#define F_CPU            8
 
 #endif

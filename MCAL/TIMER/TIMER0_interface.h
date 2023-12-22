@@ -12,13 +12,7 @@ typedef enum {
  TIMER0_OVF
 }Timers_Interrupt ;
 
-#define _1_                         1
-#define _8_                         2
-#define _64_                        3
-#define _256_                       4
-#define _1024_                      5
-#define EXTERNAL_cLOCK_FALLING_EDGE 6
-#define EXTERNAL_cLOCK_RISING_EDGE  7
+
 
 
 void TIMER_voidInit(void);

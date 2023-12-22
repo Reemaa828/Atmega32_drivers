@@ -16,18 +16,18 @@ void TIMER_voidInit(void){
     #if TIMER_MODE == NORMAL_MODE
        CLR_BIT(TCCR0,WGM00);
        CLR_BIT(TCCR0,WGM01);
-        #if   TIMER_OCO_NON_PWN == PORT_VALUE  
+        #if   TIMER_OCO_NON_PWM == PORT_VALUE  
              CLR_BIT(TCCR0,COM00);              
              CLR_BIT(TCCR0,COM01);              
-       #elif TIMER_OCO_NON_PWN == TOGGLE_OCO   
+       #elif TIMER_OCO_NON_PWM == TOGGLE_OCO   
              SET_BIT(DDRB,3);
              SET_BIT(TCCR0,COM00);              
              CLR_BIT(TCCR0,COM01);           
-       #elif TIMER_OCO_NON_PWN == CLEAR_OCO  
+       #elif TIMER_OCO_NON_PWM == CLEAR_OCO  
              SET_BIT(DDRB,3);
              CLR_BIT(TCCR0,COM00);              
              SET_BIT(TCCR0,COM01);  
-       #elif TIMER_OCO_NON_PWN == SET_OCO  
+       #elif TIMER_OCO_NON_PWM == SET_OCO  
              SET_BIT(DDRB,3);
              SET_BIT(TCCR0,COM00);              
              SET_BIT(TCCR0,COM01);   
@@ -65,29 +65,39 @@ void TIMER_voidSetCallBackFun(void (* Copy_pvCallBack)(void),Timers_Interrupt in
       
 }
 
+
 void __vector_12(void) __attribute__((signal));
 void __vector_12(void){
-
-      TIMER_pCallBack[TIMER0_OVF]();
+      TIMER_pCallBack[TIMER0_COMP]();
 }
 
 void __vector_11(void) __attribute__((signal));
 void __vector_11(void){
-      TIMER_pCallBack[TIMER0_COMP]();
+
+	 Global_u32Counter++;
+
+		      if(Global_u32Counter==Global_u32OverFlowCounts){
+		    	  TIMER_pCallBack[TIMER0_OVF]();
+		    	  Global_u32Counter=0;
+		      }
 }
 
 u8 TIMER_u8GetCounts(void){
       return TCNT0;
 }
 
+
 void TIMER_voidSetDesiredTime_ms(u32 Copy_u32DesiredTime){
-      u32 Local_u32TickTime       = preScale[TIMER_PRESCALER]*1000000/(TIMER_RESOLUTION*1000000);
-      u32 Local_u32OverflowTime   = Local_u32TickTime*OVERFLOW_COUNTS*1000;
-      Global_u32OverFlowCounts       = Copy_u32DesiredTime/Local_u32OverflowTime;
-        u32  Local_u32Reminder = Copy_u32DesiredTime%Local_u32OverflowTime;
+       u32 Local_u32TickTime          = preScale[TIMER_PRESCALER]*1000000/(F_CPU*1000000);
+       u32 Local_u32TotalTicks        = Copy_u32DesiredTime*1000/Local_u32TickTime;
+       u32 Local_u32OverflowTime      = Local_u32TickTime*OVERFLOW_COUNTS*1000;
+       Global_u32OverFlowCounts       = Copy_u32DesiredTime/Local_u32OverflowTime;
+       u32  Local_u32Reminder         = Local_u32TotalTicks%OVERFLOW_COUNTS;
+
         if(Local_u32Reminder!=0){
             Global_u32OverFlowCounts++;
         }
+
      TIMER_voidSetPreload(Local_u32OverflowTime-Local_u32Reminder);
 }
 
