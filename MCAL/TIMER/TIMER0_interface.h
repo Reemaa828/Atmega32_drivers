@@ -12,9 +12,6 @@ typedef enum {
  TIMER0_OVF
 }Timers_Interrupt ;
 
-
-
-
 void TIMER_voidInit(void);
 void TIMER_voidSetPreload(u8 Copy_u8PreloadValue);
 void TIMER_voidEnable(void);

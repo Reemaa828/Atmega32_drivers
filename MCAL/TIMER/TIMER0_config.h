@@ -1,5 +1,12 @@
 #ifndef MCAL_TIMER_TIMER_CONFIG_H_
 #define MCAL_TIMER_TIMER_CONFIG_H_
+/***************************************/
+/*          TIMER options              */
+/*    1- TIMER_0                       */
+/*    2- TIMER_1                       */
+/*    3- TIMER_2                       */
+/***************************************/
+#define TIMER_NUM                  TIMER_0
 
 /***************************************/
 /*          TIMER_MODE options         */
@@ -30,6 +37,15 @@
 /*    7- EXTERNAL_cLOCK_RISING_EDGE    */
 /***************************************/
 #define TIMER_PRESCALER        _1_ 
+
+/***************************************/
+/*       TIMER_OCO_NON_PWM options     */
+/*    1- PORT_VALUE_PWM                */
+/*    3- CLEAR_OCO_PWM                 */
+/*    4- SET_OCO_PWM                   */
+/***************************************/
+#define TIMER_OCO_PWM        CLEAR_OCO_PWM 
+
 
 #define OVERFLOW_COUNTS 256
 #define TIMER_RESOLUTION 8

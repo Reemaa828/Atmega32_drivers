@@ -17,15 +17,25 @@ void TIMER_voidInit(void){
     #if  TIMER_MODE == NORMAL_MODE
             CLR_BIT(TCCR0,WGM00);
             CLR_BIT(TCCR0,WGM01);
-               
-      
+    
     #elif TIMER_MODE == CTC_MODE
              CLR_BIT(TCCR0,WGM00);
              SET_BIT(TCCR0,WGM01);
              TCCR0&=0b11001111;
              TCCR0|=(TIMER_OCO_NON_PWM<<4);
 
-         
+    #elif TIMER_MODE == FAST_PHASE_MODE
+             SET_BIT(TCCR0,WGM00);
+             SET_BIT(TCCR0,WGM01);
+             TCCR0&=0b11001111;
+             TCCR0|=(TIMER_OCO_NON_PWM<<4);
+
+    #elif TIMER_MODE == PHASE_CORRECT_MODE
+             SET_BIT(TCCR0,WGM00);
+             CLR_BIT(TCCR0,WGM01);
+             TCCR0&=0b11001111;
+             TCCR0|=(TIMER_OCO_PWM<<4);
+
  #endif
     /***ENABLE INTERUPT***/
     SET_BIT(TIMSK,TOIE0);
@@ -49,22 +59,18 @@ void TIMER_voidDisable(void){
 }
 
 void TIMER_voidSetCallBackFun(void (* Copy_pvCallBack)(void),Timers_Interrupt interruptNum){
-      Global_u32Counter++;
-
-      if(Global_u32Counter>=Global_u32OverFlowCounts){
-
-            TIMER_pCallBack[interruptNum]=Copy_pvCallBack;
-            Global_u32Counter=0;
-      }
       
+       if(Copy_pvCallBack!=NULL){
+            TIMER_pCallBack[interruptNum]=Copy_pvCallBack;
+       }  
 }
 
 
 void __vector_10(void) __attribute__((signal));
 void __vector_10(void){
-      
+       
 		    	  TIMER_pCallBack[TIMER0_COMP]();
-		    	
+       	    	
     
 }
 
@@ -104,7 +110,7 @@ void TIMER_voidSetDesiredTime_ms(u32 Copy_u32DesiredTime){
 }
 
 void TIMER_voidSetCompareValue(u8 Copy_u8CompareVal){
-      Global_CompareVal=Copy_u8CompareVal
+    Global_CompareVal=Copy_u8CompareVal
 	OCR0=Copy_u8CompareVal;
 }
 
