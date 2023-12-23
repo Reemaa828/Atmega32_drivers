@@ -20,4 +20,5 @@ void TIMER_voidSetCallBackFun(void (* Copy_pvCallBack)(void), Timers_Interrupt i
 u8 TIMER_u8GetCounts(void);
 void TIMER_voidSetDesiredTime_ms(u8 Copy_u32DesiredTime);
 void TIMER_voidSetCompareValue(u8 Copy_u8CompareVal);
+void TIMER_voidSetDutyCycle(u8 Copy_u8DutyCycle);
 #endif

@@ -68,21 +68,25 @@ void TIMER_voidSetCallBackFun(void (* Copy_pvCallBack)(void),Timers_Interrupt in
 
 void __vector_10(void) __attribute__((signal));
 void __vector_10(void){
-       
-		    	  TIMER_pCallBack[TIMER0_COMP]();
-       	    	
-    
+    if(TIMER_pCallBack[TIMER0_COMP]!=NULL){ 
+		    if(Global_u32Counter>=Global_u32OverFlowCounts){
+	    	  TIMER_pCallBack[TIMER0_COMP]();
+	    	  Global_u32Counter=0;
+		    }
+             Global_u32Counter++;
+		}
 }
 
 void __vector_11(void) __attribute__((signal));
 void __vector_11(void){
-
-	 Global_u32Counter++;
-
-		      if(Global_u32Counter==Global_u32OverFlowCounts){
-		    	  TIMER_pCallBack[TIMER0_OVF]();
-		    	  Global_u32Counter=0;
-		      }
+    if(TIMER_pCallBack[TIMER0_OVF]!=NULL){
+		 
+		  if(Global_u32Counter==Global_u32OverFlowCounts){
+	 	  TIMER_pCallBack[TIMER0_OVF]();
+	 	  Global_u32Counter=0;
+		  }
+          Global_u32Counter++;
+		}
 }
 
 u8 TIMER_u8GetCounts(void){
@@ -91,27 +95,35 @@ u8 TIMER_u8GetCounts(void){
 
 
 void TIMER_voidSetDesiredTime_ms(u32 Copy_u32DesiredTime){
+       u32  Local_u32Reminder=0;
        u32 Local_u32TickTime          = preScale[TIMER_PRESCALER]*1000000/(F_CPU*1000000);
        u32 Local_u32TotalTicks        = Copy_u32DesiredTime*1000/Local_u32TickTime;
        #if TIMER_MODE == NORMAL_MODE
        u32 Local_u32OverflowTime      = Local_u32TickTime*OVERFLOW_COUNTS*1000;
        Global_u32OverFlowCounts       = Copy_u32DesiredTime/Local_u32OverflowTime;
-       u32  Local_u32Reminder         = Local_u32TotalTicks%OVERFLOW_COUNTS;
+       Local_u32Reminder              = Local_u32TotalTicks%OVERFLOW_COUNTS;
+       TIMER_voidSetPreload(Local_u32OverflowTime-Local_u32Reminder);
       #elif TIMER_MODE == CTC_MODE
        u32 Local_u32OverflowTime      = Local_u32TickTime*Global_CompareVal*1000;
        Global_u32OverFlowCounts       = Copy_u32DesiredTime/Local_u32OverflowTime;
-       u32  Local_u32Reminder         = Local_u32TotalTicks%Global_CompareVal;
+       Local_u32Reminder              = Local_u32TotalTicks%Global_CompareVal;
       #endif 
         if(Local_u32Reminder!=0){
             Global_u32OverFlowCounts++;
         }
-
-     TIMER_voidSetPreload(Local_u32OverflowTime-Local_u32Reminder);
 }
 
 void TIMER_voidSetCompareValue(u8 Copy_u8CompareVal){
     Global_CompareVal=Copy_u8CompareVal
 	OCR0=Copy_u8CompareVal;
+}
+
+void TIMER_voidSetDutyCycle(u8 Copy_u8DutyCycle){
+    #if TIMER_MODE == FAST_PHASE_MODE
+    OCR0=(Copy_u8DutyCycle*256)/100;
+    #elif TIMER_MODE == PHASE_CORRECT_MODE
+    OCR0=(Copy_u8DutyCycle*510)/100;
+    #endif
 }
 
 
