@@ -21,4 +21,7 @@
 #define TIFR                            *((volatile u8 *)(0x58))
 #define TOV0                            0
 #define OCF0                            1
+
+#define OCR0			               *((volatile u8*)(0x5C))
+
 #endif

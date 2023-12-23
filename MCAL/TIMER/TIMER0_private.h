@@ -8,4 +8,8 @@
 #define _1024_                      5
 #define EXTERNAL_CLOCK_FALLING_EDGE 6
 #define EXTERNAL_CLOCK_RISING_EDGE  7
+#define  PORT_VALUE                 0                
+#define  TOGGLE_OCO                 1  
+#define  CLEAR_OCO                  2
+#define  SET_OCO                    3
 #endif

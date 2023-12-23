@@ -8,31 +8,25 @@
 
 static u32 Global_u32OverFlowCounts=0;
 static u32 Global_u32Counter=0;
+u8 Global_CompareVal=0;
 u16 preScale[]={0,1,8,64,256,1024};
 volatile void (* TIMER_pCallBack[8])(void)={NULL};
 
 void TIMER_voidInit(void){
 
-    #if TIMER_MODE == NORMAL_MODE
-       CLR_BIT(TCCR0,WGM00);
-       CLR_BIT(TCCR0,WGM01);
-        #if   TIMER_OCO_NON_PWM == PORT_VALUE  
-             CLR_BIT(TCCR0,COM00);              
-             CLR_BIT(TCCR0,COM01);              
-       #elif TIMER_OCO_NON_PWM == TOGGLE_OCO   
-             SET_BIT(DDRB,3);
-             SET_BIT(TCCR0,COM00);              
-             CLR_BIT(TCCR0,COM01);           
-       #elif TIMER_OCO_NON_PWM == CLEAR_OCO  
-             SET_BIT(DDRB,3);
-             CLR_BIT(TCCR0,COM00);              
-             SET_BIT(TCCR0,COM01);  
-       #elif TIMER_OCO_NON_PWM == SET_OCO  
-             SET_BIT(DDRB,3);
-             SET_BIT(TCCR0,COM00);              
-             SET_BIT(TCCR0,COM01);   
-        #endif
-    #endif
+    #if  TIMER_MODE == NORMAL_MODE
+            CLR_BIT(TCCR0,WGM00);
+            CLR_BIT(TCCR0,WGM01);
+               
+      
+    #elif TIMER_MODE == CTC_MODE
+             CLR_BIT(TCCR0,WGM00);
+             SET_BIT(TCCR0,WGM01);
+             TCCR0&=0b11001111;
+             TCCR0|=(TIMER_OCO_NON_PWM<<4);
+
+         
+ #endif
     /***ENABLE INTERUPT***/
     SET_BIT(TIMSK,TOIE0);
     SET_BIT(TIMSK,OCIE0);
@@ -44,7 +38,7 @@ void TIMER_voidSetPreload(u8 Copy_u8PreloadValue){
 
 void TIMER_voidEnable(void){
       
-        TCCR0|=0b11111000;
+        TCCR0&=0b11111000;
         TCCR0|=TIMER_PRESCALER;
 }
 
@@ -66,9 +60,12 @@ void TIMER_voidSetCallBackFun(void (* Copy_pvCallBack)(void),Timers_Interrupt in
 }
 
 
-void __vector_12(void) __attribute__((signal));
-void __vector_12(void){
-      TIMER_pCallBack[TIMER0_COMP]();
+void __vector_10(void) __attribute__((signal));
+void __vector_10(void){
+      
+		    	  TIMER_pCallBack[TIMER0_COMP]();
+		    	
+    
 }
 
 void __vector_11(void) __attribute__((signal));
@@ -90,14 +87,25 @@ u8 TIMER_u8GetCounts(void){
 void TIMER_voidSetDesiredTime_ms(u32 Copy_u32DesiredTime){
        u32 Local_u32TickTime          = preScale[TIMER_PRESCALER]*1000000/(F_CPU*1000000);
        u32 Local_u32TotalTicks        = Copy_u32DesiredTime*1000/Local_u32TickTime;
+       #if TIMER_MODE == NORMAL_MODE
        u32 Local_u32OverflowTime      = Local_u32TickTime*OVERFLOW_COUNTS*1000;
        Global_u32OverFlowCounts       = Copy_u32DesiredTime/Local_u32OverflowTime;
        u32  Local_u32Reminder         = Local_u32TotalTicks%OVERFLOW_COUNTS;
-
+      #elif TIMER_MODE == CTC_MODE
+       u32 Local_u32OverflowTime      = Local_u32TickTime*Global_CompareVal*1000;
+       Global_u32OverFlowCounts       = Copy_u32DesiredTime/Local_u32OverflowTime;
+       u32  Local_u32Reminder         = Local_u32TotalTicks%Global_CompareVal;
+      #endif 
         if(Local_u32Reminder!=0){
             Global_u32OverFlowCounts++;
         }
 
      TIMER_voidSetPreload(Local_u32OverflowTime-Local_u32Reminder);
 }
+
+void TIMER_voidSetCompareValue(u8 Copy_u8CompareVal){
+      Global_CompareVal=Copy_u8CompareVal
+	OCR0=Copy_u8CompareVal;
+}
+
 
